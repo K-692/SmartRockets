@@ -3,177 +3,157 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![p5.js](https://img.shields.io/badge/p5.js-v0.10.2-ED225D.svg?logo=p5.js)](https://p5js.org/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E.svg?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![Research Paper](https://img.shields.io/badge/Paper-PDF%20Document-red.svg)](docs/Smart_Rockets_Paper.pdf)
 
-> **An interactive evolutionary simulation where autonomous rockets learn to navigate treacherous obstacle-filled paths toward a designated target using Genetic Algorithms (GA) without any human intervention or predefined pathfinding.**
-
----
-
-## 👥 Authors & Academic Affiliation
-
-- **Dipankar Mazumder** — B.Tech (CSE), JIS University, Kolkata, India ([dipankarmazumder9831@gmail.com](mailto:dipankarmazumder9831@gmail.com))
-- **Krishnendu Pal** — B.Tech (CSE), JIS University, Kalna, India ([palkrishnendu2@gmail.com](mailto:palkrishnendu2@gmail.com))
-- **Dr. Saikat Maity** — Supervisor, JIS University, Kolkata, India ([saikat.maity@jisuniversity.ac.in](mailto:saikat.maity@jisuniversity.ac.in))
-
-📄 **Original Research Paper:** Available in [`docs/Smart_Rockets_Paper.pdf`](docs/Smart_Rockets_Paper.pdf).
+> **An interactive evolutionary simulation where autonomous rockets learn to navigate around treacherous obstacles toward a designated target using Genetic Algorithms (GA) without any human intervention or predefined pathfinding.**
 
 ---
 
-## 📖 Abstract
+## 📌 Project Overview
 
-In this project, core principles of machine learning and natural selection—such as **Gene Generation**, **Fitness Evaluation**, **Selection**, **Crossover**, and **Mutation**—are implemented to construct an autonomous evolutionary simulator in **p5.js**. A population of rockets begins with zero knowledge of their environment, initially shooting off in random directions. Over successive generations, natural selection rewards rockets that get closer to the destination while penalizing collisions. Through genetic recombination and stochastic mutation, the swarm self-optimizes, learning to navigate around complex barriers and reach the target coordinate efficiently.
+This project is an evolution simulator designed in **p5.js** and **JavaScript**. Concepts like **Natural Selection**, **Mutation**, **Gene Generation**, **Fitness Evaluation**, and **Crossover** are implemented to demonstrate how machine learning and evolutionary strategies solve spatial search and pathfinding problems.
 
----
-
-## 📸 System Architecture & Interactive UI
-
-The simulation is rendered entirely client-side on an interactive HTML5 Canvas with real-time HUD telemetry and environmental controls.
+A population of rockets begins with zero prior knowledge of their environment. Initially, they shoot off in completely random directions, and almost none reach the destination. However, through successive generations, the rockets learn from the mistakes of previous generations: they learn to avoid obstacle collisions and evolve coordinated, curved paths to reach the target.
 
 <p align="center">
-  <img src="assets/images/fig8_ui_architecture.png" alt="Smart Rockets UI Architecture Reference" width="700"/>
+  <img src="assets/images/simulation_screenshot.jpeg" alt="Smart Rockets Simulation Screenshot" width="600"/>
   <br/>
-  <em>Figure 8: Reference of Attribute Numbers for Canvas Zones and DOM Controls</em>
+  <em>Figure: Real-time simulation sketch showing rockets navigating toward the target with dynamic obstacles and telemetry</em>
 </p>
-
-### Attribute Reference Guide
-
-| Attribute No. | Component | Description & Functional Behavior |
-|:---:|:---|:---|
-| **1** | **Obstacle Spawn Area** | Designated spatial perimeter ($Y \in [180, 380]$) where all obstacles are confined to prevent blocking starting or arrival points. |
-| **2** | **Start Point** | Launch coordinate from which all rockets emerge at frame 0 of each generation. Re-randomized upon reset. |
-| **3** | **End Point (Target)** | Destination coordinate ($25\text{px}$ radius). Rockets reaching within $20\text{px}$ are marked as successful. |
-| **4** | **Rockets** | The active autonomous agents (phenotypes) whose orientation and movement are governed by their genetic vectors. |
-| **5** | **Start Point Spawn Area** | Safe perimeter ($Y \in [420, 580]$) where the starting point is spawned upon reset. |
-| **6** | **Telemetry HUD Panel** | Real-time heads-up display reporting **Generation**, **Total Rockets**, **Rockets Reached**, **Rockets Not Reached**, and **Mutation Rate**. |
-| **7** | **Population Slider** | Slider ($1$ to $300$) dynamically scaling swarm density. Changing this re-seeds the population and resets the generation count. |
-| **8** | **2x Acceleration Button** | Boosts simulation throughput by reducing lifespan to 100 frames and tripling thruster force magnitude to $3.0$. |
-| **9** | **Add Obstacle Button** | Spawns a new randomized rectangular barrier in the Obstacle Spawn Area (maximum 15 barriers). |
-| **10** | **Remove Obstacle Button**| Deletes the most recently added obstacle from the environment. |
-| **11** | **Obstacles** | Dynamic colored rectangular barriers. Any rocket colliding with an obstacle crashes and stops immediately. |
-| **12** | **Reset Button** | Resets all generational history, clears obstacles, and generates new random Start and Target locations. |
 
 ---
 
-## 🧬 Methodology & Algorithmic Workflow
+## 🧬 What is a Genetic Algorithm?
 
-The evolutionary pipeline follows the classic six-phase Genetic Algorithm cycle:
-
-<p align="center">
-  <img src="assets/images/fig6_methodology_flowchart.png" alt="Methodology Flowchart" width="420"/>
-  <br/>
-  <em>Figure 6: Flowchart of the Proposed Genetic Algorithm Methodology</em>
-</p>
-
-### 1. Initialization (Initial Population)
-The process begins with an initial population of size $N$ (default $N = 101$). Each rocket carries a chromosome $\mathbf{C}$ composed of $L$ directional force vectors (genes), where $L$ is the simulation lifespan ($L = 250$ frames).
+A **Genetic Algorithm (GA)** is a metaheuristic search and optimization technique inspired by Charles Darwin's theory of natural evolution. In a GA, a population of candidate solutions (called individuals, creatures, or phenotypes) is iteratively evolved toward optimal or near-optimal solutions.
 
 <p align="center">
-  <img src="assets/images/fig1_initial_population.png" alt="Initial Population Array" width="340"/>
+  <img src="assets/images/flowchart.png" alt="Genetic Algorithm Flowchart" width="450"/>
   <br/>
-  <em>Figure 1: Array representation of initial population chromosomes</em>
+  <em>Figure: Flowchart representing the standard Genetic Algorithm lifecycle</em>
 </p>
+
+The core evolutionary cycle operates in successive generational loops:
+1. **Initialize Population:** Create a randomized pool of candidate solutions.
+2. **Fitness Evaluation:** Measure how well each individual performs the desired task.
+3. **Termination Check:** Determine if a satisfactory fitness level or generation limit has been reached.
+4. **Selection:** Favor fitter individuals for reproduction, weighting reproduction probability by fitness.
+5. **Crossover (Recombination):** Combine genetic material from two parent solutions to create offspring.
+6. **Mutation:** Randomly alter small parts of the genetic code to preserve diversity and avoid local optima.
+
+---
+
+## 🔬 Working Principle & Methodology
+
+### 1. Initialization (Population, Chromosomes, and Genes)
+- **Population:** A collection of autonomous rocket agents (default size: 101 rockets).
+- **Chromosome (DNA):** Each rocket possesses a single chromosome composed of an array of directional force vectors.
+- **Genes:** Each individual force vector in the array is a gene, corresponding to one discrete frame of the rocket's lifespan (lifespan: 250 frames in normal mode).
+
+<p align="center">
+  <img src="assets/images/array_representation.png" alt="Array Representation of Population, Chromosomes, and Genes" width="500"/>
+  <br/>
+  <em>Figure: Array representation of chromosomes and genes across a population</em>
+</p>
+
+In our implementation, genes are represented as 2D force vectors rather than binary bitstrings. Each gene imparts a directional push to the rocket at that specific frame.
 
 ### 2. Phenotype Simulation & Physics
-During each frame $t \in [0, L-1]$, the rocket reads gene $\vec{f}_t$ from its DNA and applies it as acceleration:
-$$\vec{a}_t = \vec{f}_t$$
-$$\vec{v}_{t+1} = \vec{v}_t + \vec{a}_t$$
-$$\vec{p}_{t+1} = \vec{p}_t + \vec{v}_{t+1}$$
+During each frame of the rocket's lifespan (from frame 0 to frame 249), the rocket reads its corresponding gene vector from its DNA and applies it as an acceleration force:
+
+- **Acceleration:** Applied directly from the current frame's gene force vector.
+- **Velocity:** Updated by adding the current acceleration to the previous velocity (`Velocity = Velocity + Acceleration`).
+- **Position:** Updated by adding the current velocity to the previous position (`Position = Position + Velocity`).
+- **Acceleration Reset:** Acceleration is cleared back to zero at the end of each frame so force does not accumulate indefinitely.
+
+The physical rocket body is drawn oriented in the direction of its current velocity vector.
 
 ### 3. Fitness Function
-At the end of the rocket's lifespan (or upon collision/arrival), its fitness score $f$ is evaluated based on the final Euclidean distance $d = \|\vec{p}_{\text{final}} - \vec{p}_{\text{target}}\|$ relative to canvas width $W = 600$:
-$$f_{\text{base}} = \text{map}(d, 0, W, W, 0) = W - d$$
+At the conclusion of each generation (or upon colliding with an obstacle or reaching the destination), each rocket's fitness is calculated based on its proximity to the target:
 
-To create strong selective pressure:
-$$f = \begin{cases} 
-f_{\text{base}} \times 10 & \text{if target reached } (d < 20\text{px}) \\
-f_{\text{base}} / 10 & \text{if crashed into boundary or obstacle} \\
-f_{\text{base}} & \text{if completed flight without reaching}
-\end{cases}$$
-
-Scores are then normalized relative to the maximum fitness achieved in that generation:
-$$f_{\text{norm}}^{(i)} = \frac{f^{(i)}}{\max_{k}(f^{(k)})}$$
+- **Distance Calculation:** Measures the final Euclidean distance (`d`) between the rocket's position and the center of the target.
+- **Base Fitness:** Inversely proportional to distance. On a 600 x 600 canvas, closer rockets receive higher base fitness:
+  ```
+  Base Fitness = Canvas Width - Distance to Target
+  ```
+- **Selective Pressure Multipliers:**
+  - **Success Reward:** If a rocket successfully reaches within 20 pixels of the target, its fitness is **multiplied by 10**.
+  - **Crash Penalty:** If a rocket crashes into an obstacle or flies out of the canvas boundaries, its fitness is **divided by 10**.
+  - **Incomplete Flight:** Rockets that run out of lifespan without crashing or reaching retain their base fitness.
+- **Fitness Normalization:** All fitness values in the generation are divided by the maximum fitness observed in that generation, scaling all scores between `0.0` and `1.0`.
 
 ### 4. Selection (Roulette-Wheel Mating Pool)
-Individuals with higher normalized fitness are given proportionally higher representation in the mating pool $\mathcal{M}$. Individual $i$ is duplicated $n_i = \lfloor f_{\text{norm}}^{(i)} \times 100 \rfloor$ times into $\mathcal{M}$. Two parent candidates are then randomly sampled:
-$$\text{Parent } A, \; \text{Parent } B \sim \mathcal{U}(\mathcal{M})$$
+To ensure that fitter rockets have a higher probability of passing their traits to the next generation, a roulette-wheel mating pool is constructed:
+- Each rocket is added to a mating pool array a number of times proportional to its normalized fitness score (`Normalized Fitness * 100`).
+- Two parent rockets are then randomly selected from this weighted pool. Fitter rockets occupy a much larger share of the pool and are selected far more frequently.
 
-<p align="center">
-  <img src="assets/images/fig7_ga_lifecycle.png" alt="GA Lifecycle" width="550"/>
-  <br/>
-  <em>Figure 7: Initialization, Selection, Crossover, and Generation Transition</em>
-</p>
-
-### 5. Single-Point Crossover (Recombination)
-A random locus midpoint $m \sim \mathcal{U}\{0, L-1\}$ is chosen. Genes prior to $m$ are inherited from Parent A, and genes after $m$ are inherited from Parent B to produce the child's chromosome:
-
-<p align="center">
-  <img src="assets/images/fig2_crossover_point.png" alt="Crossover Point" width="300"/>
-  &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="assets/images/fig3_gene_exchange.png" alt="Gene Exchange" width="300"/>
-  <br/>
-  <em>Figure 2: Crossover point selection &nbsp;&nbsp;|&nbsp;&nbsp; Figure 3: Gene exchange between parents</em>
-</p>
-
-<p align="center">
-  <img src="assets/images/fig4_new_offspring.png" alt="New Offspring" width="300"/>
-  <br/>
-  <em>Figure 4: Newly generated offspring chromosome added to the population</em>
-</p>
+### 5. Crossover (Recombination)
+Offspring are generated by combining the genetic sequences of the two selected parents:
+- A random crossover midpoint index is chosen along the length of the chromosome.
+- Genes prior to this midpoint are copied from Parent A.
+- Genes after this midpoint are copied from Parent B.
+- This creates a new child DNA sequence inheriting directional traits from both successful ancestors.
 
 ### 6. Mutation
-To avoid stagnation and premature convergence on suboptimal local paths, random mutation occurs with a probability of $P_{\text{mut}} = 0.01$ (1%). When triggered, a gene vector is replaced with a completely random 2D unit vector:
+To maintain genetic diversity and prevent the population from getting permanently stuck in suboptimal trajectories:
+- Each gene in the offspring's chromosome has a **1% probability** (mutation rate = 0.01) of mutating.
+- When mutation occurs, the existing force vector is replaced with a completely new, random 2D directional vector.
 
-<p align="center">
-  <img src="assets/images/fig5_mutation.png" alt="Mutation Operator" width="340"/>
-  <br/>
-  <em>Figure 5: Array representation of chromosome before and after stochastic mutation</em>
-</p>
-
-### 7. Generational Progression & Convergence
-- **Generation 0–5:** Rockets explore randomly in all directions; collisions with obstacles and boundaries are high.
-- **Generation 10–25:** Tendencies toward the general direction of the target emerge; crash rates decline as unfit trajectories are pruned.
-- **Generation 50–60:** The population evolves tight, curved trajectory corridors dodging barriers.
-- **Success Criteria:** When $\ge 20\%$ to $30\%$ of the population successfully reaches the destination, the swarm is officially considered evolved for that obstacle configuration.
+### 7. Generational Progression & Evolution
+- **Generations 1–10:** Rockets scatter randomly; most crash into barriers or borders.
+- **Generations 10–30:** Rockets begin converging toward the general direction of the target, and crash rates drop.
+- **Generations 40–60:** The population evolves precise curved trajectories that smoothly navigate around placed obstacles.
+- **Evolution Milestone:** When 20% to 30% of the swarm successfully reaches the target, the population is declared to have successfully evolved for the current environment.
 
 ---
 
-## 📁 Repository Structure
+## 🎮 Interactive Controls & HUD
+
+The simulation provides an interactive interface with real-time controls below the canvas:
+
+- **HUD Telemetry Panel (Top Left):** Displays the current **Generation count**, **Total Rockets**, **Rockets Reached**, **Rockets Not Reached**, and the static **Mutation Rate (1%)**.
+- **Spawn Zones:**
+  - **Target Area (Top):** Destination coordinate where rockets aim to submerge.
+  - **Obstacle Spawn Area (Middle, Y: 180 to 380):** Confined region where barriers spawn to prevent blocking the start or end points.
+  - **Start Area (Bottom, Y: 420 to 580):** Launch coordinate where all rockets emerge at frame 0.
+- **Buttons & Sliders:**
+  - **Add Obstacle:** Adds a new random rectangular barrier inside the Obstacle Spawn Area (up to 15 obstacles).
+  - **Remove Obstacle:** Removes the most recently placed obstacle.
+  - **Reset:** Resets generation count to zero, clears all obstacles, and randomizes new Start and Target locations.
+  - **2x Button:** Doubles simulation speed by shortening lifespan to 100 frames and increasing thrust force to 3.0.
+  - **Number of Rockets Slider:** Adjusts population size between 1 and 300 rockets. Adjusting this slider resets the generation count to start fresh with the new population size.
+
+---
+
+## 📁 Project Structure
 
 ```
 SmartRockets/
-├── index.html                     # HTML entry point importing p5.js and application scripts
-├── DNA.js                         # Genotype representation, single-point crossover & 1% mutation
-├── Rocket.js                      # Autonomous vehicle physics (kinematics, collision, fitness)
-├── Population.js                  # Swarm manager (batch evaluation, roulette mating pool, breeding)
-├── Obstacle.js                    # Environmental barrier entity with collision intersection tests
-├── Processing.js                  # Main simulation driver, p5 setup/draw loop, HUD & DOM UI
-├── flow.md                        # Comprehensive implementation log & research documentation
+├── index.html                     # Web entry point importing p5.js and script files
+├── DNA.js                         # Genotype class handling force vectors, crossover, and mutation
+├── Rocket.js                      # Rocket phenotype class: physics, collision, and fitness
+├── Population.js                  # Swarm coordinator: evaluation, mating pool, and selection
+├── Obstacle.js                    # Rectangular barrier class with collision detection
+├── Processing.js                  # Main driver sketch: setup, draw loop, HUD, and DOM controls
+├── flow.md                        # Project state tracker and implementation log
 ├── README.md                      # Project documentation and visual guide
-├── .gitignore                     # Git ignore file for OS/IDE temp artifacts
+├── .gitignore                     # Git ignore rules for OS and temporary files
 ├── libraries/
-│   └── p5.js                      # p5.js graphics and vector mathematics library (v0.10.2)
-├── assets/
-│   └── images/                    # Extracted research publication figures
-│       ├── fig1_initial_population.png
-│       ├── fig2_crossover_point.png
-│       ├── fig3_gene_exchange.png
-│       ├── fig4_new_offspring.png
-│       ├── fig5_mutation.png
-│       ├── fig6_methodology_flowchart.png
-│       ├── fig7_ga_lifecycle.png
-│       └── fig8_ui_architecture.png
-└── docs/
-    └── Smart_Rockets_Paper.pdf    # Original conference research paper
+│   └── p5.js                      # p5.js library (v0.10.2)
+└── assets/
+    └── images/
+        ├── flowchart.png              # Basic flowchart of Genetic Algorithm
+        ├── array_representation.png   # Array representation of chromosomes and genes
+        └── simulation_screenshot.jpeg # Canvas simulation screenshot with obstacles & HUD
 ```
 
 ---
 
 ## 🚀 How to Run Locally
 
-Because the project is built with pure client-side JavaScript and **p5.js**, no complicated compilers, build tools, or database setups are required.
+Because this project is built with client-side JavaScript and **p5.js**, it runs in any standard web browser without needing compilation or backend servers.
 
 ### Method 1: Python Built-in Server (Recommended)
-Open your terminal in the project directory and run:
+Open a terminal inside the project directory and run:
 
 ```bash
 # Python 3
@@ -185,65 +165,26 @@ http://localhost:8000
 ```
 
 ### Method 2: Node.js `npx serve`
-If you have Node.js installed:
 ```bash
 npx serve .
 ```
 
 ### Method 3: VS Code Live Server
-1. Install the **Live Server** extension in VS Code.
-2. Right-click [`index.html`](index.html) and select **"Open with Live Server"**.
+1. Open the project folder in VS Code.
+2. Install the **Live Server** extension.
+3. Right-click [`index.html`](index.html) and select **"Open with Live Server"**.
 
 ### Method 4: Direct Browser Launch
-You can also open [`index.html`](index.html) directly in any modern web browser (Google Chrome, Firefox, Safari, Edge).
+Double-click [`index.html`](index.html) or open it directly with any modern web browser (Google Chrome, Safari, Mozilla Firefox, Microsoft Edge).
 
 ---
 
-## 🎮 How to Interact with the Simulation
+## 🌐 Real-World Extensions & Applications
 
-- **Watch Evolution Unfold:** Observe how the rockets transition from chaotic scatter in Generation 1 to focused, synchronized pathfinding within 40–50 generations.
-- **Add Barriers:** Click **"Add Obstacle"** to place random barriers in the middle section of the canvas and watch the rockets learn to navigate around them.
-- **Remove Barriers:** Click **"Remove Obstacle"** to clear obstacles one by one.
-- **Speed Up:** Click **"2x"** to cut the generation lifespan to 100 frames and increase thrust, allowing rapid generational progression.
-- **Scale the Population:** Use the **Number of Rockets** slider ($1$ to $300$) to observe how population size impacts genetic diversity and convergence speed.
-- **Reset Environment:** Click **"Reset"** to re-randomize start and target locations and test evolutionary adaptation to new environments.
+The principles of Genetic Algorithms demonstrated in this simulation are widely applicable across various computational disciplines:
 
----
-
-## 🔭 Research Extensions & Applications
-
-As discussed in Section 9 of the research paper, the principles implemented in this project extend to numerous computational and engineering domains:
-
-1. **Autonomous Vehicle Routing (VRPTW):** Multi-objective optimization balancing vehicle count and distance traveled under time windows without bias.
-2. **Neuroevolution (NEAT):** Augmenting vector chromosomes with Artificial Neural Networks (ANN) taking distance sensors as inputs for dynamic, reactive path planning.
-3. **Image Processing & Segmentation:** Optimizing image thresholding, contour extraction, and segment boundary detection.
-4. **Economics & Financial Modeling:** Applying evolutionary algorithms to game-theoretic equilibria, asset pricing, and automated algorithmic trading models.
-
----
-
-## 📚 References & Citation
-
-If you use this work or findings in your research, please reference the publication:
-
-```bibtex
-@inproceedings{mazumder2020smartrockets,
-  title={Smart Rockets using Genetic Algorithm},
-  author={Mazumder, Dipankar and Pal, Krishnendu and Maity, Dr. Saikat},
-  booktitle={IOCER Conference Proceedings},
-  year={2020},
-  address={JIS University, Kolkata, India}
-}
-```
-
-### Key Bibliography
-- **Goldberg, D. E.** (1989). *Genetic Algorithms in Search, Optimization, and Machine Learning*. Addison-Wesley.
-- **Davis, L.** (1991). *Handbook of Genetic Algorithms*. Van Nostrand Reinhold.
-- **Holland, J. H.** (1992). *Adaptation in Natural and Artificial Systems*. MIT Press.
-- **Doerr, B., et al.** (2009). *Evolutionary algorithms and dynamic programming*. ACM GECCO.
-- **Razali, N. M., & Geraghty, J.** (2011). *Genetic algorithm performance with different selection strategies*. Proceedings of the World Congress on Engineering.
-
----
-
-<p align="center">
-  Developed with ❤️ by Dipankar Mazumder & Krishnendu Pal under the guidance of Dr. Saikat Maity.
-</p>
+1. **Autonomous Vehicle Routing (VRPTW):** Optimizing vehicle dispatch schedules, delivery routes, and fuel consumption under time windows.
+2. **Neural Networks & Neuroevolution:** Evolving weights and topologies in Artificial Neural Networks (such as NEAT) for robotic navigation.
+3. **Bioinformatics:** Secondary RNA structure prediction and sequence alignment.
+4. **Finance and Economics:** Automated design of algorithmic trading strategies, asset pricing, and market equilibrium modeling.
+5. **Image Processing:** Unbiased optimization for image enhancement, edge detection, and segmentation.
